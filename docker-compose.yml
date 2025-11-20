@@ -1,5 +1,7 @@
 version: "3.8"
+
 services:
+
   backend:
     build: ./backend
     volumes:
@@ -8,17 +10,15 @@ services:
     ports:
       - "8888:8888"
     environment:
-      - NODE_ENV=development
-      - DATABASE=mongodb://mongo:27017/local-idurar-erp-crp
-      - PORT=8888
-      - NODE_OPTIONS=--openssl-legacy-provider
-      - JWT_SECRET=secret_key_1234
-
+      NODE_ENV: development
+      DATABASE: mongodb://mongo:27017/erpcrm
+      PORT: 8888
+      NODE_OPTIONS: --openssl-legacy-provider
+      JWT_SECRET: b0577642fa894de29e07522961cc742b57fca4f82e5748fb2360cd8d0758fd46
+      PUBLIC_SERVER_FILE: http://backend:8888/
     command: sh -c "npm run setup && npm run dev"
-
     networks:
       - server-mongo
-
     depends_on:
       - mongo
 
@@ -30,10 +30,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
-      - REACT_APP_API_URL=http://backend:8888/api
-      - NODE_OPTIONS=--openssl-legacy-provider
-
+      NODE_ENV: development
+      VITE_BACKEND_SERVER: http://backend:8888/
+      VITE_FILE_BASE_URL: http://backend:8888/
+      NODE_OPTIONS: --openssl-legacy-provider
     depends_on:
       - backend
 
