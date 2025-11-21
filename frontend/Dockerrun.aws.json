@@ -1,0 +1,14 @@
+{
+  "AWSEBDockerrunVersion": 1,
+  "Image": {
+    "Name": "naga2112/erp-crm-frontend-harness:latest2",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 3000,
+      "HostPort": 80
+    }
+  ],
+  "Logging": "/var/log/app"
+}
