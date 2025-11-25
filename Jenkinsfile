@@ -5,8 +5,8 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         DOCKERHUB_USERNAME = 'naga2112'
 
-        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-backend-harness"
-        FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-frontend-harness"
+        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-backend-jenkins"
+        FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-frontend-jenkins"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
