@@ -39,7 +39,8 @@ pipeline {
                         dir('frontend') {
                             bat """
                                 docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} ^
-                                             -t ${FRONTEND_IMAGE}:latest2 .
+                                            -t ${FRONTEND_IMAGE}:latest2 ^
+                                            --build-arg REACT_APP_API_URL=http://192.168.150.128:8888/api .
                             """
                         }
                     }
