@@ -18,7 +18,6 @@ import useLanguage from '@/locale/useLanguage';
 import calculate from '@/utils/calculate';
 import { useSelector } from 'react-redux';
 import SelectAsync from '@/components/SelectAsync';
-import SelectCurrency from '@/components/SelectCurrency';
 
 export default function QuoteForm({ subTotal = 0, current = null }) {
   const { last_quote_number } = useSelector(selectFinanceSettings);
@@ -116,9 +115,6 @@ function LoadQuoteForm({ subTotal = 0, current = null }) {
           </Form.Item>
         </Col>
         <Col className="gutter-row" span={6}>
-          <SelectCurrency />
-        </Col>
-        <Col className="gutter-row" span={4}>
           <Form.Item
             label={translate('status')}
             name="status"
