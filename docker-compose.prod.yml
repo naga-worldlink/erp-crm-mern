@@ -1,8 +1,22 @@
 version: "3.8"
 
 services:
+  mongo:
+    image: mongo:latest
+    container_name: erp-mongo
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - erp-network
+    environment:
+      - MONGO_INITDB_DATABASE=idurar-erp-crm
+    ports:
+      - "27017:27017"
+
   backend:
-    image: naga2112/erp-crm-backend-harness:latest1
+    image: naga2112/erp-crm-backend-jenkins:latest1
+    container_name: erp-backend
     restart: always
     ports:
       - "8888:8888"
@@ -10,62 +24,31 @@ services:
       - NODE_ENV=production
       - DATABASE=mongodb://mongo:27017/idurar-erp-crm
       - PORT=8888
+      - JWT_SECRET=your_super_secret_key_change_this
       - NODE_OPTIONS=--openssl-legacy-provider
-      - JWT_SECRET=${JWT_SECRET:-change_this_secret_in_production}
-    networks:
-      - erp-crm-network
     depends_on:
       - mongo
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8888/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    networks:
+      - erp-network
 
   frontend:
-    image: naga2112/erp-crm-frontend-harness:latest2
+    image: naga2112/erp-crm-frontend-jenkins:latest2
+    container_name: erp-frontend
     restart: always
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - REACT_APP_API_URL=http://backend:8888/api
+      - REACT_APP_API_URL=http://localhost:8888/api
       - NODE_OPTIONS=--openssl-legacy-provider
-    networks:
-      - erp-crm-network
     depends_on:
       - backend
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  mongo:
-    image: mongo:latest
-    restart: always
-    volumes:
-      - mongodb_data:/data/db
-      - mongodb_config:/data/configdb
     networks:
-      - erp-crm-network
-    environment:
-      - MONGO_INITDB_DATABASE=idurar-erp-crm
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+      - erp-network
 
 volumes:
   mongodb_data:
-    driver: local
-  mongodb_config:
-    driver: local
 
 networks:
-  erp-crm-network:
+  erp-network:
     driver: bridge
