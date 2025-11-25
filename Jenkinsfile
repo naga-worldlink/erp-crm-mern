@@ -5,16 +5,12 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         DOCKERHUB_USERNAME = 'naga2112'
 
-        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-backend-jenkins"
-        FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-frontend-jenkins"
+        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-backend-harness"
+        FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/erp-crm-frontend-harness"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
-
-        /* --------------------------------------------------
-         * 1. CHECKOUT CODE
-         * -------------------------------------------------- */
         stage('Checkout from Bitbucket') {
             steps {
                 echo "Checking out repository..."
@@ -22,97 +18,6 @@ pipeline {
             }
         }
 
-        /* --------------------------------------------------
-         * 2. INSTALL DEPENDENCIES FOR TESTING
-         * -------------------------------------------------- */
-        stage('Install Dependencies') {
-            parallel {
-
-                stage('Backend Dependencies') {
-                    steps {
-                        dir('backend') {
-                            bat """
-                                call npm install
-                            """
-                        }
-                    }
-                }
-
-                stage('Frontend Dependencies') {
-                    steps {
-                        dir('frontend') {
-                            bat """
-                                call npm install
-                            """
-                        }
-                    }
-                }
-            }
-        }
-
-        /* --------------------------------------------------
-         * 3. RUN UNIT TESTS
-         * -------------------------------------------------- */
-        /*
-        stage('Run Unit Tests') {
-            parallel {
-
-                stage('Backend Unit Tests') {
-                    steps {
-                        dir('backend') {
-                            bat """
-                                call npm test
-                            """
-                        }
-                    }
-                }
-
-                stage('Frontend Unit Tests') {
-                    steps {
-                        dir('frontend') {
-                            bat """
-                                call npm test
-                            """
-                        }
-                    }
-                }
-            }
-        }
-        */
-
-        /* --------------------------------------------------
-         * 4. RUN INTEGRATION (API) TESTS
-         * -------------------------------------------------- */
-        /* --------------------------------------------------
-         * 5. RUN FUNCTIONAL / UI TESTS (CYPRESS)
-         * -------------------------------------------------- */
-        /*
-        stage('Integration Tests - Backend') {
-            steps {
-                dir('backend') {
-                    bat """
-                        echo Running API Integration Tests...
-                        call npm run test:integration
-                    """
-                }
-            }
-        }
-
-        stage('UI Functional Tests - Cypress') {
-            steps {
-                dir('frontend') {
-                    bat """
-                        echo Running Cypress tests...
-                        call npx cypress run || exit 0
-                    """
-                }
-            }
-        }
-        */
-
-        /* --------------------------------------------------
-         * 6. BUILD DOCKER IMAGES
-         * -------------------------------------------------- */
         stage('Build Docker Images') {
             parallel {
 
@@ -139,12 +44,10 @@ pipeline {
                         }
                     }
                 }
+
             }
         }
 
-        /* --------------------------------------------------
-         * 7. PUSH DOCKER IMAGES TO DOCKER HUB
-         * -------------------------------------------------- */
         stage('Push to Docker Hub') {
             steps {
                 echo "Logging into Docker Hub..."
