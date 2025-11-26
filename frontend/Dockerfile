@@ -9,12 +9,11 @@ COPY vite.config.js ./
 
 COPY . .
 
-RUN npm install
+# The .env file is already copied with the above COPY . . command
+# Just verify it's there (optional)
+RUN cat .env
 
-# Create .env file with correct backend URL at build time
-RUN echo 'VITE_FILE_BASE_URL="https://erp-crm-backend-dtwiqq6p6q-uc.a.run.app/"' > .env && \
-    echo 'VITE_BACKEND_SERVER="https://erp-crm-backend-dtwiqq6p6q-uc.a.run.app/"' >> .env && \
-    echo 'PROD=true' >> .env
+RUN npm install
 
 EXPOSE 3000
 
