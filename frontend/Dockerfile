@@ -9,12 +9,17 @@ COPY vite.config.js ./
 
 COPY . .
 
-# The .env file is already copied with the above COPY . . command
-# Just verify it's there (optional)
-RUN cat .env
+# Force correct .env
+RUN rm -f .env && \
+    echo 'VITE_FILE_BASE_URL="https://erp-crm-mern-331764159612.us-central1.run.app/"' > .env && \
+    echo 'VITE_BACKEND_SERVER="https://erp-crm-mern-331764159612.us-central1.run.app/"' >> .env && \
+    echo 'VITE_DEV_REMOTE="remote"' >> .env
+
+# Verify .env
+RUN echo "=== .env content ===" && cat .env
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 8080
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["sh", "-c", "npm run dev -- --host 0.0.0.0 --port ${PORT:-8080}"]
